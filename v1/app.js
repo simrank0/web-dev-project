@@ -1,28 +1,23 @@
-const { urlencoded } = require("body-parser");
-
 var express     = require("express"),
     app         = express(),
     bodyParser  = require("body-parser"),
     mongoose    = require("mongoose");
 
 //Connecting to db yelp_camp
-mongoose.connect("mongodb://localhost/yelp_camp", {useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect("mongodb://localhost/yelp_camp", {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true})
+.then(() => console.log('Connected to DB!'))
+.catch(error => console.log(error));
 
 //make connection with db
 const db = mongoose.connection;
-
-//connection functions: on error and once open.
-db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function() {
-    console.log("DB Connected!!")
-});
 
 app.use(bodyParser.urlencoded({extended: true}));
 
 //SCHEMA SETUP
 var campgroundSchema = new mongoose.Schema({
     name: String,
-    image: String
+    image: String,
+    description: String
 });
 
 var Campground = mongoose.model("Campground", campgroundSchema);
@@ -55,7 +50,7 @@ app.get("/", (req,res)=>{
 app.get("/campgrounds", (req,res)=>{
     Campground.find({},(err, campground)=>{
         if(!err){
-            res.render("campgrounds.ejs", {campgrounds: campground});
+            res.render("index.ejs", {campgrounds: campground});
         }else{
             console.log("Some error occured");
         }
@@ -67,13 +62,23 @@ app.post("/campgrounds",(req,res)=>{
     var name = req.body.name;
     var image = req.body.image;
     var newCampground = {name: name, image: image};
-    campgrounds.push(newCampground);
-    res.redirect("/campgrounds");
+    // campgrounds.push(newCampground);
+    Campground.create(newCampground, (err,campground)=>{
+                if(!err){
+                    console.log(campground);
+                    res.redirect("/campgrounds");
+                }else{
+                    console.log("Something went wrong");
+                }});
 });
 
 app.get("/campgrounds/new",(req,res)=>{
     res.render("new.ejs");
 });
+
+app.get("/campgrounds/:id", (req,res)=>{
+    res.send("hello traveller");
+})
 
 app.listen(3000, ()=>{
     console.log("YelpCamp server is listening");
