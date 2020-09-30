@@ -8,9 +8,6 @@ mongoose.connect("mongodb://localhost/yelp_camp", {useNewUrlParser: true, useUni
 .then(() => console.log('Connected to DB!'))
 .catch(error => console.log(error));
 
-//make connection with db
-const db = mongoose.connection;
-
 app.use(bodyParser.urlencoded({extended: true}));
 
 //SCHEMA SETUP
@@ -61,7 +58,8 @@ app.get("/campgrounds", (req,res)=>{
 app.post("/campgrounds",(req,res)=>{
     var name = req.body.name;
     var image = req.body.image;
-    var newCampground = {name: name, image: image};
+    var desc = req.body.description;
+    var newCampground = {name: name, image: image, description: desc};
     // campgrounds.push(newCampground);
     Campground.create(newCampground, (err,campground)=>{
                 if(!err){
@@ -77,7 +75,13 @@ app.get("/campgrounds/new",(req,res)=>{
 });
 
 app.get("/campgrounds/:id", (req,res)=>{
-    res.send("hello traveller");
+    Campground.findById(req.params.id, (err,foundCampground)=>{
+        if(!err){
+            res.render("show.ejs",{campground: foundCampground});
+        }else{
+            console.log(err);
+        }
+    });
 })
 
 app.listen(3000, ()=>{
