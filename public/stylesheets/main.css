@@ -1,3 +1,7 @@
 .img0{
     height: 10rem;
 }
+.noDecor{
+    color: black !important;
+    text-decoration: none !important;
+}
