@@ -5,3 +5,6 @@
     color: black !important;
     text-decoration: none !important;
 }
+.delete-form{
+    display: inline !important;
+}

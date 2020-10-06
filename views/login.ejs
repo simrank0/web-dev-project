@@ -1,10 +1,15 @@
-<%- include("partials/header") %>
+<%- include("./partials/header") %>
 
-<h1>Login!</h1>
+<div class="container text-center">
+    <h1>Log In</h1>
 
-<form action="/login" method="POST">
-    <input type="text" name="username" placeholder="username">
-    <input type="password" name="password" placeholder="password">
-    <button>Log In</button>
-</form>
-<%- include("partials/footer") %>
+    <form action="/login" method="POST">
+        <input class="form-control mb-1 col-sm-4 mx-auto mt-4" type="text" name="username" placeholder="username" required>
+        <input class="form-control mb-1 col-sm-4 mx-auto" type="text" name="password" placeholder="password" required>
+        <button class="btn btn-primary btn-lg btn-block col-sm-4 mx-auto">Log In</button>
+    </form>
+
+    <a class="nav-link" href="/campgrounds">Go Back</a>
+</div>
+
+<%- include("./partials/footer") %> 
